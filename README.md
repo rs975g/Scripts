@@ -1,0 +1,16 @@
+# scripts
+- ``cf-find-apps_org-space.sh``:  provide an app name and get the org and space.  You also have the opportunity to 'follow' and target that org/space.  NOTE:  In order for this to run properly, you'll need to install jq:  http://stedolan.github.io/jq/
+- ``cf_setup_admin_support_user.sh``:  This takes an R2 CF user account id and adds all of necessary CF admin scopes.  You'll need to install uaac first in order to run this:  ``$ gem install cf-uaac``
+- ``cf_find_service_instances.sh``: This takes a service name (from the Marketplace) and returns all instances, including the service name, org and space.  This is handy when trying to clean up a Service Broker.  NOTE:  In order for this to run properly, you'll need to install jq:  http://stedolan.github.io/jq/
+- `` cf_add_scim.read.sh``: Do you have a Space/OrgManager that still can't add users to roles?  The user probably doesn't have the UAA scim.read scope.  This script logs into the R2 UAA and adds the user to the scope.
+- `` cf_reset_user_password.sh``: Script resets user password in R2. Usage: ./cf_reset_user_password.sh USERNAME PASSWORD
+- `` cf_delete_unused_service_instances.sh``: Script deletes unused service instances in a Space. Ensure logging into CF and being in the correct Org/Space before running this script.
+- `` cf_find_service_instances_per_plan.sh``: Script that finds all service instances of a given plan name.  Note that a given plan name could be shared across services.  This script will identify the service name as well.
+- ``enableservices.sh``: Script that will enable services to an org when we have a service name.
+- ``serviceenable.sh``: Script that will enable services to an org when you have a broker name.
+- `` org_mem_util.sh``: Generates a report of memory utilization for each org.
+- ``RabbitMq-sop.sh``: This is to test Rabbit MQ and Postgres service is up and running.
+- ``Marketplace.sh`` : This is similar to cf m, but without plan names . if you just want to know the services in Marketplace, use this.
+- ``restartapp.sh`` : This is used to restart an app  
+- ``RestartEMAll.sh`` : Restart all EdgeManager sevices after restart of a RMQ35 cluster.
+- ``frameworkTest.sh`` : This scripts tests the analytics functionality by creating a new instance of UAA and Analytics and running through the phases of anlaytic creation, validation and upload and execution. 

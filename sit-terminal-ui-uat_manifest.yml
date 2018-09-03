@@ -1,0 +1,30 @@
+applications:
+- name: sit-terminal-ui-uat
+  buildpacks:
+  - https://github.com/muymoo/staticfile-buildpack.git
+  disk_quota: 1G
+  env:
+    AUTH_HEADER_ENCODED: Basic c2l0LWNsaWVudC10ZXJtdWk6c2l0LWNsaWVudC10ZXJtdWk=
+    CLIENT_ID: sit-client-termui
+    DEPLOYED: 08/16/18-15:53
+    ENV: uat
+    REDIS: predix-cache
+    SHOW_TERMINAL_PREFERENCES: "true"
+    UAA_SERVER_URL: https://ge-transportation-bnsf-trial.predix-uaa.run.aws-usw02-pr.ice.predix.io
+    VERSION: "558"
+    node_env: cloud
+    uaa_service_label: predix-uaa
+  instances: 2
+  memory: 1G
+  routes:
+  - route: sit-terminal-ui-uat.sims.getransportation.com
+  services:
+  - sit-security-redis
+  - sit-terminal-visualization-service
+  - sit-yard-visualization-service
+  - sit-resource-visualization-service
+  - sit-plan-visualization-service
+  - sit-algoconfig-visualization-service
+  - sit-configuration-service
+  - newrelic
+  stack: cflinuxfs2

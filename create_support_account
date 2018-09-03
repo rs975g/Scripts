@@ -1,0 +1,47 @@
+MARKETO_TOKEN=""
+LEAD_INFO=""
+
+
+function getMarketToken(){
+	MARKETO_TOKEN=$(curl 'https://022-dqh-814.mktorest.com/identity/oauth/token?grant_type=client_credentials&client_id=c31a6805-d89d-4484-9776-d1380cd67390&client_secret=T0hstRgIx9GHNQsP4Y70usVBaAo9di6B'  -H 'Content-Type: application/json' -H 'Authorization: Bearer 973e9af7-cc0f-4928-88f1-f3cca632e484:ab' --compressed -S | jq ".access_token" | sed -e 's/\"//g') 
+}
+
+function getLeadById(){
+	LEAD_INFO=$(curl "https://022-dqh-814.mktorest.com/rest/v1/leads/$1.json?fields=firstname,company,email,lastname,title,mobilePhone,phone,misc3,predixAccountRegistration,enterpriseAccountAdmin,predixIOData,billingcity,billingPostalCode" -H 'Content-Type: application/json' -H 'Accept: */*' -H "Authorization: Bearer $MARKETO_TOKEN" --compressed)
+}
+
+function getField(){
+	echo $(echo $LEAD_INFO | jq "$1" | sed 's/\"//g')
+}
+
+function callServiceNow(){
+	EMAIL=$(getField ".result[0].email")
+	if [ null == $EMAIL ]
+		then
+		echo  "Could not get the valid lead information"
+		exit 1;
+	fi
+	FIRST_NAME=$(getField ".result[0].firstName")
+	LAST_NAME=$(getField ".result[0].lastName")
+	COMPANY=$(getField ".result[0].email")
+	BUSINESS_PHONE=$(getField ".result[0].phone")
+	MOBILE_PHONE=$(getField ".result[0].mobilePhone")
+
+	curl 'https://gesoftware.service-now.com/PredixIORWS.do?Action=Create_User' -H 'Content-Type: application/json' -H 'Accept: */*' -H 'Cache-Control: no-cache' -H 'Authorization: Basic UHJlZGl4SU86UHIzRDF4STA=' -H 'Connection: keep-alive' --data-binary '{ "user": { "email":"$EMAIL","first_name":"$FIRST_NAME","last_name":"$LAST_NAME","company":"$COMPANY","business_phone":"$BUSINESS_PHONE","mobile_phone":"$MOBILE_PHONE"},"org": { "name":"$EMAIL"},"space": { "name": "dev"}}' --compressed
+
+	echo "Support account created for the user "$EMAIL
+}
+
+function main(){
+	if [ -z $1 ]
+	then
+		echo "The lead id should be passed in as the first parameter"
+		exit 1;
+	fi
+	
+	getMarketToken
+	getLeadById $1
+	callServiceNow
+}
+
+main $*
